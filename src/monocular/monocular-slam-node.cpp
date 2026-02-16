@@ -10,7 +10,7 @@ MonocularSlamNode::MonocularSlamNode(ORB_SLAM3::System* pSLAM)
     m_SLAM = pSLAM;
     // std::cout << "slam changed" << std::endl;
     m_image_subscriber = this->create_subscription<ImageMsg>(
-        "camera",
+        "/image_raw",
         10,
         std::bind(&MonocularSlamNode::GrabImage, this, std::placeholders::_1));
     std::cout << "slam changed" << std::endl;
@@ -38,6 +38,10 @@ void MonocularSlamNode::GrabImage(const ImageMsg::SharedPtr msg)
         return;
     }
 
-    std::cout<<"one frame has been sent"<<std::endl;
-    m_SLAM->TrackMonocular(m_cvImPtr->image, Utility::StampToSec(msg->header.stamp));
+    // flip each frame before sending since our camera is mounted upside down.
+    cv::Mat flipped;
+    cv::flip(m_cvImPtr->image, flipped, -1); // -1 indicates both axes to flip
+    std::cout<<"one flipped frame has been sent"<<std::endl;
+
+    m_SLAM->TrackMonocular(flipped, Utility::StampToSec(msg->header.stamp));
 }
