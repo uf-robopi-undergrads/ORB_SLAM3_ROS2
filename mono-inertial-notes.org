@@ -1,0 +1,5 @@
+* Mono Inertial Support
+
+** Existing stereo inertial info
+
+looks pretty well defined, we just need to incorporate the imu grabbing on top of the mono by itself and sync those timepoints

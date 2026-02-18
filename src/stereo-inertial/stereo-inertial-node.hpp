@@ -20,13 +20,16 @@ using ImageMsg = sensor_msgs::msg::Image;
 class StereoInertialNode : public rclcpp::Node
 {
 public:
+    // takes slam from the orb wrapper, a rectify option (for fisheyes?), and ig equlaization
     StereoInertialNode(ORB_SLAM3::System* pSLAM, const string &strSettingsFile, const string &strDoRectify, const string &strDoEqual);
     ~StereoInertialNode();
 
 private:
+    // separate parallel function for each grabbing of data
     void GrabImu(const ImuMsg::SharedPtr msg);
     void GrabImageLeft(const ImageMsg::SharedPtr msgLeft);
     void GrabImageRight(const ImageMsg::SharedPtr msgRight);
+    // i believe this pulls the pointer from the image grab  and converts it to an opencv matrix that can be used 
     cv::Mat GetImage(const ImageMsg::SharedPtr msg);
     void SyncWithImu();
 

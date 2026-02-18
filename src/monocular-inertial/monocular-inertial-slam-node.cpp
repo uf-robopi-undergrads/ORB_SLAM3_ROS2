@@ -7,7 +7,7 @@ using std::placeholders::_1;
 MonocularInertialSlamNode::MonocularInertialSlamNode(ORB_SLAM3::System* pSLAM)
 :   Node("ORB_SLAM3_ROS2")
 {
-    m_SLAM = pSLAM;
+    SLAM_ = pSLAM;
     // std::cout << "slam changed" << std::endl;
     m_image_subscriber = this->create_subscription<ImageMsg>(
         "/image_raw",
@@ -19,10 +19,10 @@ MonocularInertialSlamNode::MonocularInertialSlamNode(ORB_SLAM3::System* pSLAM)
 MonocularInertialSlamNode::~MonocularInertialSlamNode()
 {
     // Stop all threads
-    m_SLAM->Shutdown();
+    SLAM_->Shutdown();
 
     // Save camera trajectory
-    m_SLAM->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+    SLAM_->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
 }
 
 void MonocularInertialSlamNode::GrabImage(const ImageMsg::SharedPtr msg)
@@ -43,5 +43,5 @@ void MonocularInertialSlamNode::GrabImage(const ImageMsg::SharedPtr msg)
     cv::flip(m_cvImPtr->image, flipped, -1); // -1 indicates both axes to flip
     std::cout<<"one flipped frame has been sent"<<std::endl;
 
-    m_SLAM->TrackMonocular(flipped, Utility::StampToSec(msg->header.stamp));
+    SLAM_->TrackMonocular(flipped, Utility::StampToSec(msg->header.stamp));
 }
