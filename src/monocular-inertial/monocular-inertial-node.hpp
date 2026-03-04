@@ -34,10 +34,10 @@ private:
     void GrabImu(const ImuMsg::SharedPtr msg);
 
     // turn image into openCV matrix that we can use
-    cv::Mat GetImage(const ImageMsg::SharedPtr msg);
+    cv::Mat GetImage(const ImageMsg::SharedPtr msg, bool flip = true);
 
     // keep imu and image timepoints stable
-    void SyncWithIMU();
+    void SyncWithImu();
 
     // message subscriptions
     rclcpp::Subscription<ImuMsg>::SharedPtr subImu_;
