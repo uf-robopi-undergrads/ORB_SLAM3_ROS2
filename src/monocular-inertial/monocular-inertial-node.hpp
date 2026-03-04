@@ -19,13 +19,13 @@ using ImuMsg = sensor_msgs::msg::Imu;
 using ImageMsg = sensor_msgs::msg::Image;
 
 
-class MonocularInertialSlamNode : public rclcpp::Node
+class MonocularInertialNode : public rclcpp::Node
 {
 public:
     // keep simple for now, don't take in options that aren't needed yet
-    MonocularInertialSlamNode(ORB_SLAM3::System* pSLAM);
+    MonocularInertialNode(ORB_SLAM3::System* pSLAM);
 
-    ~MonocularInertialSlamNode();
+    ~MonocularInertialNode();
 
 private:
     using ImageMsg = sensor_msgs::msg::Image;

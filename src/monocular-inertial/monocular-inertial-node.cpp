@@ -1,10 +1,10 @@
-#include "monocular-slam-node.hpp"
+#include "monocular-inertial-node.hpp"
 
 #include<opencv2/core/core.hpp>
 
 using std::placeholders::_1;
 
-MonocularInertialSlamNode::MonocularInertialSlamNode(ORB_SLAM3::System* pSLAM)
+MonocularInertialNode::MonocularInertialNode(ORB_SLAM3::System* pSLAM)
 :   Node("ORB_SLAM3_ROS2")
 {
     SLAM_ = pSLAM;
@@ -12,11 +12,11 @@ MonocularInertialSlamNode::MonocularInertialSlamNode(ORB_SLAM3::System* pSLAM)
     m_image_subscriber = this->create_subscription<ImageMsg>(
         "/image_raw",
         10,
-        std::bind(&MonocularInertialSlamNode::GrabImage, this, std::placeholders::_1));
+        std::bind(&MonocularInertialNode::GrabImage, this, std::placeholders::_1));
     std::cout << "slam changed" << std::endl;
 }
 
-MonocularInertialSlamNode::~MonocularInertialSlamNode()
+MonocularInertialNode::~MonocularInertialNode()
 {
     // Stop all threads
     SLAM_->Shutdown();
@@ -25,7 +25,7 @@ MonocularInertialSlamNode::~MonocularInertialSlamNode()
     SLAM_->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
 }
 
-void MonocularInertialSlamNode::GrabImage(const ImageMsg::SharedPtr msg)
+void MonocularInertialNode::GrabImage(const ImageMsg::SharedPtr msg)
 {
     // Copy the ros image message to cv::Mat.
     try

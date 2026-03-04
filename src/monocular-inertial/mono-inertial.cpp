@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     bool visualization = true;
     ORB_SLAM3::System SLAM(argv[1], argv[2], ORB_SLAM3::System::MONOCULAR, visualization);
 
-    auto node = std::make_shared<MonocularInertialSlamNode>(&SLAM);
+    auto node = std::make_shared<MonocularInertialNode>(&SLAM);
     std::cout << "============================ " << std::endl;\
 
     rclcpp::spin(node);
