@@ -33,6 +33,9 @@ private:
     void GrabImage(const sensor_msgs::msg::Image::SharedPtr msg);
     void GrabImu(const ImuMsg::SharedPtr msg);
 
+    // turn image into openCV matrix that we can use
+    cv::Mat GetImage(const ImageMsg::SharedPtr msg);
+
     // keep imu and image timepoints stable
     void SyncWithIMU();
 
@@ -44,11 +47,13 @@ private:
     ORB_SLAM3::System* SLAM_;
     std::thread *syncThread_;
 
-    // IMU
+    // IMU buffer
     queue<ImuMsg::SharedPtr> imuBuf_;
-    std::mutex bufMutex_;
+    std::mutex imuBufMutex_;
 
-    cv_bridge::CvImagePtr m_cvImPtr;
+    // Image
+    queue<ImageMsg::SharedPtr> imgBuf_;
+    std::mutex imgBufMutex_;
 
 };
 
