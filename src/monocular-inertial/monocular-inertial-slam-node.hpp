@@ -33,7 +33,14 @@ private:
     void GrabImage(const sensor_msgs::msg::Image::SharedPtr msg);
     void GrabImu(const ImuMsg::SharedPtr msg);
 
+    // keep imu and image timepoints stable
+    void SyncWithIMU();
 
+    // message subscriptions
+    rclcpp::Subscription<ImuMsg>::SharedPtr subImu_;
+    rclcpp::Subscription<ImageMsg>::SharedPtr subImg_;
+
+    // SLAM parameters
     ORB_SLAM3::System* SLAM_;
     std::thread *syncThread_;
 
@@ -43,7 +50,6 @@ private:
 
     cv_bridge::CvImagePtr m_cvImPtr;
 
-    rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr m_image_subscriber;
 };
 
 #endif

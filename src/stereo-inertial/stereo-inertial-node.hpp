@@ -52,6 +52,7 @@ private:
     bool doEqual_;
     cv::Mat M1l_, M2l_, M1r_, M2r_;
 
+    // histogram equalization for image enhancement - necessary for mono?
     bool bClahe_;
     cv::Ptr<cv::CLAHE> clahe_ = cv::createCLAHE(3.0, cv::Size(8, 8));
 };
