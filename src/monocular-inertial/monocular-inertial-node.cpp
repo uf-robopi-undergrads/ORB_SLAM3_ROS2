@@ -134,7 +134,7 @@ void MonocularInertialNode::SyncWithImu()
 
             // DEBUG: get idea of what our IMU vector looks like on each run
             RCLCPP_INFO(this->get_logger(),
-                        R"(Num IMU Measurements: %f
+                        R"(Num IMU Measurements: %d
 First imu time: %f
 Last IMU time: %f
 Image time: %f)",
