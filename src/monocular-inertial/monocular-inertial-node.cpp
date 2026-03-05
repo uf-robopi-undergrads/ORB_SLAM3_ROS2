@@ -4,6 +4,23 @@
 
 using std::placeholders::_1;
 
+// Add variables to track the rate of data ingestion
+std::atomic<int> imuCount(0);
+std::atomic<int> imgCount(0);
+std::chrono::steady_clock::time_point imuStartTime = std::chrono::steady_clock::now();
+std::chrono::steady_clock::time_point imgStartTime = std::chrono::steady_clock::now();
+
+// Function to calculate and log the rate
+void LogRate(const std::string &topic, std::atomic<int> &count, std::chrono::steady_clock::time_point &startTime)
+{
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - startTime).count();
+    if (elapsed > 0)
+    {
+        RCLCPP_INFO(rclcpp::get_logger("RateLogger"), "%s rate: %f Hz", topic.c_str(), count / static_cast<double>(elapsed));
+    }
+}
+
 MonocularInertialNode::MonocularInertialNode(ORB_SLAM3::System *pSLAM)
     : Node("ORB_SLAM3_ROS2")
 {
@@ -41,6 +58,10 @@ void MonocularInertialNode::GrabImu(const ImuMsg::SharedPtr msg)
     imuBufMutex_.lock();   // Lock the mutex to ensure thread safety
     imuBuf_.push(msg);     // Add the IMU message to the buffer
     imuBufMutex_.unlock(); // Unlock the mutex
+
+    // Increment IMU count and log rate
+    imuCount++;
+    LogRate("IMU", imuCount, imuStartTime);
 }
 
 // Handle incoming image messages, but do not process yet
@@ -57,6 +78,10 @@ void MonocularInertialNode::GrabImage(const ImageMsg::SharedPtr msg)
     imgBuf_.push(msg);
 
     imgBufMutex_.unlock();
+
+    // Increment image count and log rate
+    imgCount++;
+    LogRate("Image", imgCount, imgStartTime);
 }
 
 // Convert ROS image message to OpenCV mat, optionally transforming image
