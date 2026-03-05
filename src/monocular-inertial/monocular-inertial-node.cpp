@@ -136,6 +136,10 @@ void MonocularInertialNode::SyncWithImu()
             imgBuf_.pop();
             imgBufMutex_.unlock();
 
+            // if the image is newer than the latest imu measurement, wait
+            if (tImg > Utility::StampToSec(imuBuf_.back()->header.stamp))
+                continue;
+
             // store list of IMU measurements since last image taken
             vector<ORB_SLAM3::IMU::Point> vImuMeas;
             imuBufMutex_.lock();
