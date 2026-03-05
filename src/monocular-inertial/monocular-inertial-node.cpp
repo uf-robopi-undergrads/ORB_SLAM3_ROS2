@@ -164,6 +164,7 @@ void MonocularInertialNode::SyncWithImu()
             if (vImuMeas.empty())
             {
                 RCLCPP_WARN(this->get_logger(), "wrapper imu measurement vector is empty!");
+                continue;
             }
             else
             {
