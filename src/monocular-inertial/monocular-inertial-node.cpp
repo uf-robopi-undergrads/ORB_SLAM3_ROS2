@@ -132,13 +132,20 @@ void MonocularInertialNode::SyncWithImu()
 
             // TODO: Maybe introduce CLAHE image enhancement - currently we assume we don't need to rectify`
 
-            // DEBUG: get idea of what our IMU vector looks like on each run
-            RCLCPP_INFO(this->get_logger(),
-                        R"(Num IMU Measurements: %d
+            if (vImuMeas.empty())
+            {
+                RCLCPP_WARN(this->get_logger(), "wrapper imu measurement vector is empty!");
+            }
+            else
+            {
+                // DEBUG: get idea of what our IMU vector looks like on each run
+                RCLCPP_INFO(this->get_logger(),
+                            R"(Num IMU Measurements: %d
 First imu time: %f
 Last IMU time: %f
 Image time: %f)",
-                        vImuMeas.size(), vImuMeas.front().t, vImuMeas.back().t, tImg);
+                            vImuMeas.size(), vImuMeas.front().t, vImuMeas.back().t, tImg);
+            }
 
             // Pass the synchronized data to the SLAM system
             SLAM_->TrackMonocular(img, tImg, vImuMeas);
