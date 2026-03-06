@@ -69,11 +69,16 @@ void MonocularInertialNode::GrabImage(const ImageMsg::SharedPtr msg)
 {
     imgBufMutex_.lock();
 
-    // remove oldest image if buffer is not empty - arbitrarily keep 10 images for testing
-    const int im_q_size = 10;
-    // queue images
-    if (imgBuf_.size() >= im_q_size)
-    {
+    // // remove oldest image if buffer is not empty - arbitrarily keep 10 images for testing
+    // const int im_q_size = 10;
+    // // queue images
+    // if (imgBuf_.size() >= im_q_size)
+    // {
+    //     imgBuf_.pop();
+    // }
+
+    // only keep latest image
+    if (!imgBuf_.empty()) {
         imgBuf_.pop();
     }
 
@@ -82,7 +87,7 @@ void MonocularInertialNode::GrabImage(const ImageMsg::SharedPtr msg)
     imgBufMutex_.unlock();
 
     // Increment image count and log rate
-    imgCount++;
+    // imgCount++;
     //LogRate("Image", imgCount, imgStartTime);
 }
 
@@ -133,14 +138,16 @@ void MonocularInertialNode::SyncWithImu()
         {
             tImg = Utility::StampToSec(imgBuf_.front()->header.stamp);
 
+            // if the image is newer than the latest imu measurement, wait
+            if (tImg > Utility::StampToSec(imuBuf_.back()->header.stamp))
+                continue;
+
+
             imgBufMutex_.lock();
             img = GetImage(imgBuf_.front());
             imgBuf_.pop();
             imgBufMutex_.unlock();
 
-            // if the image is newer than the latest imu measurement, wait
-            if (tImg > Utility::StampToSec(imuBuf_.back()->header.stamp))
-                continue;
 
             // store list of IMU measurements since last image taken
             vector<ORB_SLAM3::IMU::Point> vImuMeas;
