@@ -60,8 +60,8 @@ void MonocularInertialNode::GrabImu(const ImuMsg::SharedPtr msg)
     imuBufMutex_.unlock(); // Unlock the mutex
 
     // Increment IMU count and log rate
-    imuCount++;
-    LogRate("IMU", imuCount, imuStartTime);
+    // imuCount++;
+    // LogRate("IMU", imuCount, imuStartTime);
 }
 
 // Handle incoming image messages, but do not process yet
@@ -69,8 +69,10 @@ void MonocularInertialNode::GrabImage(const ImageMsg::SharedPtr msg)
 {
     imgBufMutex_.lock();
 
-    // remove oldest image if buffer is not empty
-    if (!imgBuf_.empty())
+    // remove oldest image if buffer is not empty - arbitrarily keep 10 images for testing
+    const int im_q_size = 10;
+    // queue images
+    if (imgBuf_.size() >= im_q_size)
     {
         imgBuf_.pop();
     }
@@ -81,7 +83,7 @@ void MonocularInertialNode::GrabImage(const ImageMsg::SharedPtr msg)
 
     // Increment image count and log rate
     imgCount++;
-    LogRate("Image", imgCount, imgStartTime);
+    //LogRate("Image", imgCount, imgStartTime);
 }
 
 // Convert ROS image message to OpenCV mat, optionally transforming image
