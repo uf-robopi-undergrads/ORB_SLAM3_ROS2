@@ -25,9 +25,13 @@ int main(int argc, char **argv)
     ORB_SLAM3::System SLAM(argv[1], argv[2], ORB_SLAM3::System::IMU_MONOCULAR, visualization);
 
     auto node = std::make_shared<MonocularInertialNode>(&SLAM);
+    // set up multithreaded executors to handle img and imu callbacks in parallel
+    rclcpp::executors::MultiThreadedExecutor executor;
+    executor.add_node(node);
+
     std::cout << "============================ " << std::endl;\
 
-    rclcpp::spin(node);
+    executor.spin();
     rclcpp::shutdown();
 
     return 0;
