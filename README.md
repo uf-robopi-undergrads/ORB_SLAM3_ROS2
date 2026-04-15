@@ -1,3 +1,9 @@
+# RoboPI Notes
+To run with our current handheld, use the following:
+```bash
+ros2 run orbslam3 mono-inertial src/orbslam3_ros2/vocabulary/ORBvoc.txt src/orbslam3_ros2/config/monocular-inertial/SLAM_Handheld.yaml
+```
+
 # ORB_SLAM3_ROS2
 This repository is ROS2 wrapping to use ORB_SLAM3
 

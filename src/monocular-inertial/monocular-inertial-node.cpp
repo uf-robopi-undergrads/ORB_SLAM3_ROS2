@@ -33,7 +33,7 @@ MonocularInertialNode::MonocularInertialNode(ORB_SLAM3::System *pSLAM)
         std::bind(&MonocularInertialNode::GrabImage, this, std::placeholders::_1));
 
     // subscribe to IMU topic
-    subImu_ = this->create_subscription<ImuMsg>("imu", 1000, std::bind(&MonocularInertialNode::GrabImu, this, _1));
+    subImu_ = this->create_subscription<ImuMsg>("imu/data", 1000, std::bind(&MonocularInertialNode::GrabImu, this, _1));
 
     // Start a separate thread to synchronize IMU and image data
     syncThread_ = new std::thread(&MonocularInertialNode::SyncWithImu, this);

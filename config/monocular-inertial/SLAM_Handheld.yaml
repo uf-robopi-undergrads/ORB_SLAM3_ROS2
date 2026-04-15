@@ -46,7 +46,7 @@ IMU.NoiseGyro: .000244 # from tum vi: 1.6968e-04
 IMU.NoiseAcc: .00147 # 2.0000e-3
 IMU.GyroWalk: 1.9393e-05 
 IMU.AccWalk: 3.e-03 # 3.0000e-3
-IMU.Frequency: 400
+IMU.Frequency: 100
 
 
 #--------------------------------------------------------------------------------------------
