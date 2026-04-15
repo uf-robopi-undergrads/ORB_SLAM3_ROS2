@@ -10,40 +10,30 @@ std::atomic<int> imgCount(0);
 std::chrono::steady_clock::time_point imuStartTime = std::chrono::steady_clock::now();
 std::chrono::steady_clock::time_point imgStartTime = std::chrono::steady_clock::now();
 
-// // Function to calculate and log the rate
-// void LogRate(const std::string &topic, std::atomic<int> &count, std::chrono::steady_clock::time_point &startTime)
-// {
-//     auto now = std::chrono::steady_clock::now();
-//     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - startTime).count();
-//     if (elapsed > 0)
-//     {
-//         RCLCPP_INFO(rclcpp::get_logger("RateLogger"), "%s rate: %f Hz", topic.c_str(), count / static_cast<double>(elapsed));
-//     }
-// }
+// Function to calculate and log the rate
+void LogRate(const std::string &topic, std::atomic<int> &count, std::chrono::steady_clock::time_point &startTime)
+{
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - startTime).count();
+    if (elapsed > 0)
+    {
+        RCLCPP_INFO(rclcpp::get_logger("RateLogger"), "%s rate: %f Hz", topic.c_str(), count / static_cast<double>(elapsed));
+    }
+}
 
 MonocularInertialNode::MonocularInertialNode(ORB_SLAM3::System *pSLAM)
     : Node("ORB_SLAM3_ROS2")
 {
     SLAM_ = pSLAM;
-
-    // setup callback groups for each subscriber to execute in parallel
-    auto callback_type = rclcpp::CallbackGroupType::MutuallyExclusive;
-    auto img_callback_group = create_callback_group(callback_type);
-    auto imu_callback_group = create_callback_group(callback_type);
-    rclcpp::SubscriptionOptions imgOptions, imuOptions;
-    imgOptions.callback_group = img_callback_group;
-    imuOptions.callback_group = imu_callback_group;
-
     // subscribe to image topic
     subImg_ = this->create_subscription<ImageMsg>(
         "/image_raw",
         10, // QOS
         // Bind callback handler with GrabImage
-        std::bind(&MonocularInertialNode::GrabImage, this, std::placeholders::_1),
-        imgOptions);
+        std::bind(&MonocularInertialNode::GrabImage, this, std::placeholders::_1));
 
     // subscribe to IMU topic
-    subImu_ = this->create_subscription<ImuMsg>("imu", 1000, std::bind(&MonocularInertialNode::GrabImu, this, _1), imuOptions);
+    subImu_ = this->create_subscription<ImuMsg>("imu", 1000, std::bind(&MonocularInertialNode::GrabImu, this, _1));
 
     // Start a separate thread to synchronize IMU and image data
     syncThread_ = new std::thread(&MonocularInertialNode::SyncWithImu, this);
@@ -88,8 +78,7 @@ void MonocularInertialNode::GrabImage(const ImageMsg::SharedPtr msg)
     // }
 
     // only keep latest image
-    if (!imgBuf_.empty())
-    {
+    if (!imgBuf_.empty()) {
         imgBuf_.pop();
     }
 
@@ -99,7 +88,7 @@ void MonocularInertialNode::GrabImage(const ImageMsg::SharedPtr msg)
 
     // Increment image count and log rate
     // imgCount++;
-    // LogRate("Image", imgCount, imgStartTime);
+    //LogRate("Image", imgCount, imgStartTime);
 }
 
 // Convert ROS image message to OpenCV mat, optionally transforming image
@@ -153,10 +142,12 @@ void MonocularInertialNode::SyncWithImu()
             if (tImg > Utility::StampToSec(imuBuf_.back()->header.stamp))
                 continue;
 
+
             imgBufMutex_.lock();
             img = GetImage(imgBuf_.front());
             imgBuf_.pop();
             imgBufMutex_.unlock();
+
 
             // store list of IMU measurements since last image taken
             vector<ORB_SLAM3::IMU::Point> vImuMeas;
