@@ -6,15 +6,15 @@
 Camera.type: "PinHole"
 
 # Camera calibration and distortion parameters (OpenCV) (equal for both cameras after stereo rectification)
-Camera.fx: 435.2046959714599
-Camera.fy: 435.2046959714599
-Camera.cx: 367.4517211914062
-Camera.cy: 252.2008514404297
+Camera.fx: 459.19701237192317
+Camera.fy: 457.80853353180186
+Camera.cx: 325.9792125286151 
+Camera.cy: 217.78188236567158
 
-Camera.k1: 0.0
-Camera.k2: 0.0
-Camera.p1: 0.0
-Camera.p2: 0.0
+Camera.k1: 0.004381520770883183
+Camera.k2: 0.025292930358449324
+Camera.p1: -0.0028837485645580333
+Camera.p2: 0.007307177278627145
 
 Camera.width: 640
 Camera.height: 480
@@ -36,10 +36,10 @@ Tbc: !!opencv-matrix
    rows: 4
    cols: 4
    dt: f
-   data: [1,   0, 0, -0.064,
-          0,   1, 0, -0.001,
-          0,   0, 1, 0.001,
-          0.0, 0.0, 0.0, 1.0]
+   data: [-0.9988672323305418, 0.041128798347246906, 0.02393061058211809, 0.004686014995121439,
+         -0.03973636756256613, -0.997639182980458, 0.0560096569799784, 0.1267847865916033,
+         0.026177724676795824, 0.05499529551328642, 0.9981433986167269, 0.4052039733916886,
+         0.0, 0.0, 0.0, 1.0]
 
 # IMU noise
 IMU.NoiseGyro: .000244 # from tum vi: 1.6968e-04 
